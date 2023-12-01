@@ -44,18 +44,21 @@ export const processNode = (note: any, notebookName: string): void => {
   loggerInfo(`Converting note "${noteData.title}"...`);
 
   try {
-    if (isComplex(note)) {
-      noteData.htmlContent = processResources(note);
-    }
-    noteData.htmlContent = extractDataUrlResources(note, noteData.htmlContent);
-
+    const contentHtml = noteData.content;
     noteData = {...noteData, ...convertHtml2Md(yarleOptions, noteData)};
-
+    const contentMd = noteData.content;
     if (noteData.title === '未命名記事') {
       const title = noteData.content.split('\n', 1)[0];
       note.title = title;
       noteData.title = title;
     }
+
+    noteData.content = contentHtml;
+    if (isComplex(note)) {
+      noteData.htmlContent = processResources(note);
+    }
+    noteData.htmlContent = extractDataUrlResources(note, noteData.htmlContent);
+    noteData.content = contentMd;
 
     noteData = {...noteData, ...getMetadata(note, notebookName)};
     noteData = {...noteData, ...getTags(note)};
