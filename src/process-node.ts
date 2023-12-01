@@ -50,6 +50,13 @@ export const processNode = (note: any, notebookName: string): void => {
     noteData.htmlContent = extractDataUrlResources(note, noteData.htmlContent);
 
     noteData = {...noteData, ...convertHtml2Md(yarleOptions, noteData)};
+
+    if (noteData.title === '未命名記事') {
+      const title = noteData.content.split('\n', 1)[0];
+      note.title = title;
+      noteData.title = title;
+    }
+
     noteData = {...noteData, ...getMetadata(note, notebookName)};
     noteData = {...noteData, ...getTags(note)};
 
